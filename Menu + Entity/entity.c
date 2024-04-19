@@ -60,40 +60,22 @@ void animerEntity(entity *e, int *currcol, int *currline)
         }
     }
 
-    if (e->dir == 0)
+    if (*currcol > e->spsheet->column)
     {
-        if (*currcol > e->spsheet->column)
+        *currcol = 1;
+        if ((*currline == e->leftLine - 1) && (e->dir == 0))
         {
-            *currcol = 1;
-            if (*currline == e->leftLine - 1)
-            {
-                *currline = 1;
-            }
-            else
-            {
-                (*currline)++;
-            }
+            *currline = 1;
+        }
+        else if ((*currline == e->spsheet->line) && (e->dir == 1))
+        {
+            *currline = e->leftLine;
+        }
+        else
+        {
+            (*currline)++;
         }
     }
-    else
-    {
-        if (*currcol > e->spsheet->column)
-        {
-            *currcol = 1;
-            if (*currline == e->spsheet->line)
-            {
-                *currline = e->leftLine;
-            }
-            else
-            {
-                (*currline)++;
-            }
-        }
-    }
-    /*printf("Sprite sheet width: %f, height: %f\n", e->spsheet->width, e->spsheet->height);
-    printf("Current column: %d, Current line: %d\n", *currcol, *currline);
-    printf("Sprite position on screen (x, y): (%d, %d)\n", e->spsheet->posEcran.x, e->spsheet->posEcran.y);
-    printf("Sprite clipping position (x, y): (%d, %d)\n", e->spsheet->posSheet.x, e->spsheet->posSheet.y);*/
 
     e->spsheet->posSheet.x = e->spsheet->width * (*currcol - 1);
     e->spsheet->posSheet.y = e->spsheet->height * (*currline - 1);
@@ -131,77 +113,36 @@ int collisionTri(entity *e, SDL_Rect pose)
     return 0;
 }
 
-/*void move(entity *e, int level, SDL_Surface *ecran, SDL_Rect pose)
+void entityProprities(entity *e, SDL_Surface *ecran, int level, float *min, float *max, int *pas)
 {
-
-    float minX, maxX, deltaX;
-    int PosMax, PosMin, ecranWidth = ecran->w;
-    srand((unsigned int)time(NULL));
+    float PosMax, PosMin, ecranWidth = ecran->w;
     if (level == 1)
     {
-        minX = 0;
-        maxX = 5;
+        *pas = 2;
+        *min = e->spsheet->posEcran.x - 120;
+        *max = e->spsheet->posEcran.x + 120;
     }
     else if (level == 2)
     {
-        minX = 0;
-        maxX = 10;
-    }
-    PosMax = ecranWidth - e->spsheet->width;
-    PosMin = 0;
-    deltaX = ((maxX - minX) * ((float)rand() / RAND_MAX) + minX); //* (rand() % 2 == 0 ? 1 : -1);
-    if (e->spsheet->posEcran.x > pose.x)
-    {
-        deltaX = -deltaX;
-    }
-    e->dirpre = e->dir;
-    if (deltaX > 0)
-    {
-        e->dir = 0;
-    }
-    else if (deltaX < 0)
-    {
-        e->dir = 1;
-    }
-    e->spsheet->posEcran.x = e->spsheet->posEcran.x + deltaX;
-
-    if (e->spsheet->posEcran.x < PosMin)
-    {
-        e->spsheet->posEcran.x = PosMin;
-    }
-    else if (e->spsheet->posEcran.x > PosMax)
-    {
-        e->spsheet->posEcran.x = PosMax;
-    }
-}*/
-
-void move(entity *e, int level, SDL_Surface *ecran, SDL_Rect pose)
-{
-    float min, max;
-    int PosMax, PosMin, ecranWidth = ecran->w, pas;
-    if (level == 1)
-    {
-        pas = 3;
-        min = e->spsheet->posEcran.x - 100;
-        max = e->spsheet->posEcran.x + 100;
-    }
-    else if (level == 2)
-    {
-        pas = 5;
-        min = e->spsheet->posEcran.x - 180;
-        max = e->spsheet->posEcran.x + 180;
+        *pas = 4;
+        *min = e->spsheet->posEcran.x - 180;
+        *max = e->spsheet->posEcran.x + 180;
     }
     PosMax = ecranWidth - e->spsheet->width;
     PosMin = 0;
 
-    if (PosMax < max)
+    if (PosMax < *max)
     {
-        max = PosMax;
+        *max = PosMax;
     }
-    if (PosMin > min)
+    if (PosMin > *min)
     {
-        min = PosMin;
+        *min = PosMin;
     }
+}
+
+void move(entity *e, SDL_Surface *ecran, SDL_Rect pose, float min, float max, int pas)
+{
     e->dirpre = e->dir;
     if (pose.x >= min && pose.x <= max)
     {
@@ -220,10 +161,10 @@ void move(entity *e, int level, SDL_Surface *ecran, SDL_Rect pose)
     {
         if (e->dir == 0)
         {
-            if (e->spsheet->posEcran.x >= PosMax)
+            if (e->spsheet->posEcran.x + pas >= max)
             {
                 e->dir = 1;
-                e->spsheet->posEcran.x -= pas;
+                e->spsheet->posEcran.x = max;
             }
             else
             {
@@ -232,10 +173,10 @@ void move(entity *e, int level, SDL_Surface *ecran, SDL_Rect pose)
         }
         else
         {
-            if (e->spsheet->posEcran.x <= PosMin)
+            if (e->spsheet->posEcran.x - pas <= min)
             {
                 e->dir = 0;
-                e->spsheet->posEcran.x += pas;
+                e->spsheet->posEcran.x = min;
             }
             else
             {
