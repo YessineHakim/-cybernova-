@@ -125,13 +125,13 @@ int collisionTri(entity *e, SDL_Rect pose)
         float actualDistance = sqrt(pow(distanceX, 2) + pow(distanceY, 2));
         if (actualDistance <= e->rayon + pradius)
         {
-            return 1; 
+            return 1;
         }
     }
-    return 0; 
+    return 0;
 }
 
-void randomMove(entity *e, int level, SDL_Surface *ecran, SDL_Rect pose)
+/*void move(entity *e, int level, SDL_Surface *ecran, SDL_Rect pose)
 {
 
     float minX, maxX, deltaX;
@@ -172,6 +172,76 @@ void randomMove(entity *e, int level, SDL_Surface *ecran, SDL_Rect pose)
     else if (e->spsheet->posEcran.x > PosMax)
     {
         e->spsheet->posEcran.x = PosMax;
+    }
+}*/
+
+void move(entity *e, int level, SDL_Surface *ecran, SDL_Rect pose)
+{
+    float min, max;
+    int PosMax, PosMin, ecranWidth = ecran->w, pas;
+    if (level == 1)
+    {
+        pas = 3;
+        min = e->spsheet->posEcran.x - 100;
+        max = e->spsheet->posEcran.x + 100;
+    }
+    else if (level == 2)
+    {
+        pas = 5;
+        min = e->spsheet->posEcran.x - 180;
+        max = e->spsheet->posEcran.x + 180;
+    }
+    PosMax = ecranWidth - e->spsheet->width;
+    PosMin = 0;
+
+    if (PosMax < max)
+    {
+        max = PosMax;
+    }
+    if (PosMin > min)
+    {
+        min = PosMin;
+    }
+    e->dirpre = e->dir;
+    if (pose.x >= min && pose.x <= max)
+    {
+        if (e->spsheet->posEcran.x > pose.x)
+        {
+            e->dir = 1;
+            e->spsheet->posEcran.x -= pas;
+        }
+        else
+        {
+            e->dir = 0;
+            e->spsheet->posEcran.x += pas;
+        }
+    }
+    else
+    {
+        if (e->dir == 0)
+        {
+            if (e->spsheet->posEcran.x >= PosMax)
+            {
+                e->dir = 1;
+                e->spsheet->posEcran.x -= pas;
+            }
+            else
+            {
+                e->spsheet->posEcran.x += pas;
+            }
+        }
+        else
+        {
+            if (e->spsheet->posEcran.x <= PosMin)
+            {
+                e->dir = 0;
+                e->spsheet->posEcran.x += pas;
+            }
+            else
+            {
+                e->spsheet->posEcran.x -= pas;
+            }
+        }
     }
 }
 

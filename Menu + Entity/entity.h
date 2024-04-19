@@ -30,7 +30,7 @@ void initEntity(entity *e, char nom[], int x, int y, char sfxnom[], int column, 
 void animerEntity( entity *e, int *currcol, int *currline);
 void afficherEntity(entity *e, SDL_Surface *ecran);
 int collisionTri( entity *e,  SDL_Rect pose); 
-void randomMove(entity *e, int level, SDL_Surface *ecran,  SDL_Rect pose);
+void move(entity *e, int level, SDL_Surface *ecran,  SDL_Rect pose);
 int collisionBB( entity *e,  SDL_Rect pose);
 void freeEntity(entity *e);
 #endif /* ENTITY_H */

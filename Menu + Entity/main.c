@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     image *musicbar[11], *mbganim[19], *obganim[36], *qt[1], *perso[1];
     SDL_Surface *ecran;
     SDL_Event event;
-    SDL_Rect poseperso = {200, 400, 57, 102};
+    SDL_Rect poseperso = {100, 400, 57, 102};
     Mix_Music *music;
     Uint32 mbgstartTime, mbgendTime, obgstartTime, obgendTime, entstartTime, entendTime, bonstartTime, bonendTime;
     texte *c = malloc(sizeof(texte));
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     int qbgx[] = {230, 420};
     int qbgy[] = {320, 320};
     char *pers[] = {"perso.png"};
-    int persimgx[] = {200};
+    int persimgx[] = {100};
     int persimgy[] = {400};
 
     // Initialisation
@@ -85,8 +85,8 @@ int main(int argc, char **argv)
         initbouton(bc, 1, cbgnom, cbgx, cbgy);
         initbouton(bo, 7, obgnom, obgx, obgy);
         initbouton(bq, 2, qbgnom, qbgx, qbgy);
-        initEntity(en, "enemy.png", 600, 375, "enemysfx.wav", 3, 8, 5, 0);
-        initEntity(bonus, "bonus.png", 760, 400, "sfx.wav", 3, 4, 3, 0);
+        initEntity(en, "enemy.png", 500, 375, "enemysfx.wav", 3, 8, 5, 0);
+        initEntity(bonus, "bonus.png", 600, 400, "sfx.wav", 3, 4, 3, 0);
         initimgs(perso, 1, pers, persimgx, persimgy);
         music = Mix_LoadMUS("soncontinue.mp3");
         if (music == NULL)
@@ -124,17 +124,17 @@ int main(int argc, char **argv)
                 }
                 break;
             case 1:
-               /* if (collisionBB(bonus, en->spsheet->posEcran) == 1)
-                {
-                    if (bonus->dir == 0)
-                    {
-                        bonus->spsheet->posEcran.x = en->spsheet->posEcran.x - (bonus->spsheet->width + 5);
-                    }
-                    if (bonus->dir == 1)
-                    {
-                        bonus->spsheet->posEcran.x = en->spsheet->posEcran.x + en->spsheet->posEcran.w + 5;
-                    }
-                }*/
+                /* if (collisionBB(bonus, en->spsheet->posEcran) == 1)
+                 {
+                     if (bonus->dir == 0)
+                     {
+                         bonus->spsheet->posEcran.x = en->spsheet->posEcran.x - (bonus->spsheet->width + 5);
+                     }
+                     if (bonus->dir == 1)
+                     {
+                         bonus->spsheet->posEcran.x = en->spsheet->posEcran.x + en->spsheet->posEcran.w + 5;
+                     }
+                 }*/
                 if (collisionBB(en, poseperso) == 1)
                 {
                     if (en->dir == 0)
@@ -146,9 +146,11 @@ int main(int argc, char **argv)
                         en->spsheet->posEcran.x = poseperso.x + poseperso.w + 5;
                     }
                 }
-                else 
+                else
                 {
-                    randomMove(en, 2, ecran, poseperso);
+                    move(en, 2, ecran, poseperso);
+                    // perso[0]->posimg.x += 3;
+                    // poseperso.x += 3;
                 }
                 animerEntity(en, &encurrcol, &encurrline);
                 afficherEntity(en, ecran);
@@ -163,9 +165,9 @@ int main(int argc, char **argv)
                         bonus->spsheet->posEcran.x = poseperso.x + poseperso.w;
                     }
                 }
-                else 
+                else
                 {
-                    randomMove(bonus, 1, ecran, poseperso);
+                    move(bonus, 1, ecran, poseperso);
                 }
                 animerEntity(bonus, &boncurrcol, &boncurrline);
                 afficherEntity(bonus, ecran);
